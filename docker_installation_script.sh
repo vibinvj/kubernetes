@@ -15,8 +15,9 @@ sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd
 sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
 
 systemctl restart sshd
-
+echo 1 > /proc/sys/net/ipv4/ip_forward
 rpm_wc=`rpm -qa | grep -i 'docker'| wc -l`
+
 
 if [ $rpm_wc -eq 0 ]
 
@@ -70,18 +71,18 @@ cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 name=Kubernetes
 baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
 enabled=1
-gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+gpgcheck=0
+#repo_gpgcheck=1
+#gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
 EOF
 
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
-
+echo ""
 echo "List Of Versions"
 echo "================"
-yum list kubectl --showduplicates --disableexcludes=kubernetes | grep kubectl | awk '{print $2}'
+yum list kubectl --disableexcludes=kubernetes | awk '{print $2}'
 echo ""
 echo "Select Proper version"
 echo "====================="
