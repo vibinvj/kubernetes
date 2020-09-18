@@ -120,13 +120,13 @@ else
 fi
 	;;
 	"4")
-yum install -y Centos-release-gluster7
+yum install -y centos-release-gluster7
 yum install -y glusterfs glusterfs-server
 systemctl start glusterd
 systemctl enable glusterd
 	;;
 	"5")
-yum install -y Centos-release-gluster7
+yum install -y centos-release-gluster7
 yum install -y heketi
 systemctl start heketi
 systemctl enable heketi
