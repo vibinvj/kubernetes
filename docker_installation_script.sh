@@ -94,6 +94,7 @@ sysctl --system >/dev/null
 else
 	echo -e "kubeadm packages already installed : \n `rpm -qa | grep -i kube`"
 fi
+;;
 "3")
 rpm_wc3=`rpm -qa | grep kubectl | wc -l`
 if [ $rpm_wc3 -eq 0 ]
