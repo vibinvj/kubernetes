@@ -23,6 +23,7 @@ gpgcheck=0
 #repo_gpgcheck=1
 #gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
+EOF
 }
 
 echo "SELECT WHICH SERVER NEED TO INSTALL"
@@ -31,7 +32,7 @@ echo ""
 echo -e "1 - DOCKER \n2 - k8S(kubeadm,kubelet,kubectl) \n3 - CLIENT(kubectl) \n4 - GFS(Glusterfs) \n5 - HEKETI"
 echo ""
 echo "ENTER NUMERIC VALUE"
-echo "===================
+echo "==================="
 echo ""
 echo -n "VALUE : "
 read a
