@@ -10,7 +10,7 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 sed -i 's/^PermitRootLogin no$/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#PubkeyAuthentication yes$/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
+#sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
 systemctl restart sshd
 echo "1" > /proc/sys/net/ipv4/ip_forward
 kuberepo() {
@@ -142,7 +142,7 @@ systemctl start heketi
 systemctl enable heketi
 echo "Run Below Commands"
 echo "=================="
-echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -I`:8080""
+echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -i`:8080""
 echo ""
 else
  echo -e "Heketi Package Already Installed: \n `rpm -qa | grep heketi`"
@@ -159,7 +159,7 @@ systemctl enable haproxy
 echo "Add Below content in this path --> /etc/haproxy/haproxy.cfg"
 echo ""
 echo -e "frontend k8s-api
-        bind    `hostname -I`:443
+        bind    `hostname -i`:443
         mode    tcp
         default_backend kube-api
 
