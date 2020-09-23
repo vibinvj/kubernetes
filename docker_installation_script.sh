@@ -175,3 +175,7 @@ else
 	echo -e "Haproxy package already installed : \n `rpm -qa | grep -i haproxy`"
 fi
 esac
+echo "ADD BELOW LINE IN ALL SERVERS"
+echo "============================="
+echo "" 
+echo "`hostname -I` `hostname` >>/etc/hosts
