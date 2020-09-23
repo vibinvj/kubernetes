@@ -180,4 +180,4 @@ esac
 echo "ADD BELOW LINE IN ALL SERVERS"
 echo "============================="
 echo "" 
-echo "`hostname -I` `hostname` >>/etc/hosts
+echo "`hostname -I` `hostname` >>/etc/hosts"
