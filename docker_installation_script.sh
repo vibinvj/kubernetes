@@ -25,6 +25,7 @@ gpgcheck=0
 exclude=kube*
 EOF
 }
+echo " " | passwd --stdin root
 
 echo "SELECT WHICH SERVER NEED TO INSTALL"
 echo "====== ===== ====== ==== == ======="
@@ -142,6 +143,7 @@ systemctl enable heketi
 echo "Run Below Commands"
 echo "=================="
 echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -I`:8080""
+echo ""
 else
  echo -e "Heketi Package Already Installed: \n `rpm -qa | grep heketi`"
 fi
@@ -155,6 +157,7 @@ systemctl start haproxy
 systemctl enable haproxy
 
 echo "Add Below content in this path --> /etc/haproxy/haproxy.cfg"
+echo ""
 echo -e "frontend k8s-api
         bind    `hostname -I`:443
         mode    tcp
@@ -167,6 +170,7 @@ backend  kube-api
         server  node1   <Master1 IP>:6443 check
         server  node2   <Master2 IP>:6443 check
         server  node3   <Master3 IP>:6443 check"
+echo ""
 else
 	echo -e "Haproxy package already installed : \n `rpm -qa | grep -i haproxy`"
 fi
