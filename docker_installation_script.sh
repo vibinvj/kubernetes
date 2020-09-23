@@ -10,6 +10,7 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 sed -i 's/^PermitRootLogin no$/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#PubkeyAuthentication yes$/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sed -i 's/ServerAliveInterval 420$/ServerAliveInterval 60/' /etc/ssh/ssh_config
 #sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
 systemctl restart sshd
 echo "1" > /proc/sys/net/ipv4/ip_forward
