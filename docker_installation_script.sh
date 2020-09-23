@@ -12,7 +12,7 @@ sed -i 's/^#PubkeyAuthentication yes$/PubkeyAuthentication yes/' /etc/ssh/sshd_c
 sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
 systemctl restart sshd
-echo 1 > /proc/sys/net/ipv4/ip_forward
+echo "1" > /proc/sys/net/ipv4/ip_forward
 kuberepo() {
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
@@ -29,7 +29,7 @@ EOF
 echo "SELECT WHICH SERVER NEED TO INSTALL"
 echo "====== ===== ====== ==== == ======="
 echo ""
-echo -e "1 - DOCKER \n2 - k8S(kubeadm,kubelet,kubectl) \n3 - CLIENT(kubectl) \n4 - GFS(Glusterfs) \n5 - HEKETI"
+echo -e "1 - DOCKER \n2 - k8S(kubeadm,kubelet,kubectl) \n3 - CLIENT(kubectl) \n4 - GFS(Glusterfs) \n5 - HEKETI \n6 - HAPROXY"
 echo ""
 echo "ENTER NUMERIC VALUE"
 echo "==================="
@@ -120,15 +120,54 @@ else
 fi
 	;;
 	"4")
+Gwc=`rpm -qa | grep -i gluster | wc -l`
+if [ $Gwc -eq 0 ]
+then
 yum install -y centos-release-gluster7
 yum install -y glusterfs glusterfs-server
 systemctl start glusterd
 systemctl enable glusterd
+else
+ echo -e "Glusterfs Package Already Installed: \n `rpm -qa | grep -i glusterfs`"
+fi
 	;;
 	"5")
+hwc=`rpm -qa | grep heketi | wc -l`
+if [ $hwc -eq 0 ]
+then
 yum install -y centos-release-gluster7
-yum install -y heketi
+yum install -y heketi*
 systemctl start heketi
 systemctl enable heketi
+echo "Run Below Commands"
+echo "=================="
+echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -I`:8080""
+else
+ echo -e "Heketi Package Already Installed: \n `rpm -qa | grep heketi`"
+fi
 	;;
+        "6")
+rpm_ha=`rpm -qa | grep -i haproxy | wc -l`
+if [ $rpm_ha -eq 0 ]
+then
+yum install -y haproxy
+systemctl start haproxy
+systemctl enable haproxy
+
+echo "Add Below content in this path --> /etc/haproxy/haproxy.cfg"
+echo -e "frontend k8s-api
+        bind    `hostname -I`:443
+        mode    tcp
+        default_backend kube-api
+
+backend  kube-api
+        mode    tcp
+        option tcp-check
+        balance roundrobin
+        server  node1   <Master1 IP>:6443 check
+        server  node2   <Master2 IP>:6443 check
+        server  node3   <Master3 IP>:6443 check"
+else
+	echo -e "Haproxy package already installed : \n `rpm -qa | grep -i haproxy`"
+fi
 esac
