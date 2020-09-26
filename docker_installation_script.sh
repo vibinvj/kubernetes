@@ -121,7 +121,7 @@ net.bridge.bridge-nf-call-iptables = 1
 EOF
 sysctl --system >/dev/null
 echo "Network Plugin -- WEAVE NET"
-echo "kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"" 
+echo -e "kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"" 
 else
         echo -e "kubectl package already installed : \n `rpm -qa | grep -i kube`"
 fi
