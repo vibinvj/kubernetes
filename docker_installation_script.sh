@@ -10,8 +10,8 @@ sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 sed -i 's/^PermitRootLogin no$/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/^#PubkeyAuthentication yes$/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd_config
-sed -i 's/ServerAliveInterval 420$/ServerAliveInterval 60/' /etc/ssh/ssh_config
-#sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 0/' /etc/ssh/sshd_config
+sed -i 's/^ServerAliveInterval 420$/ServerAliveInterval 60/' /etc/ssh/ssh_config
+sed -i 's/^ClientAliveInterval 420$/ClientAliveInterval 60/' /etc/ssh/sshd_config
 systemctl restart sshd
 echo "1" > /proc/sys/net/ipv4/ip_forward
 kuberepo() {
@@ -26,6 +26,9 @@ gpgcheck=0
 exclude=kube*
 EOF
 }
+
+yum install telnet -y
+
 echo " " | passwd --stdin root
 
 echo "SELECT WHICH SERVER NEED TO INSTALL"
@@ -143,9 +146,13 @@ yum install -y centos-release-gluster7
 yum install -y heketi*
 systemctl start heketi
 systemctl enable heketi
-echo "Run Below Commands"
-echo "=================="
-echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -i`:8080""
+echo ""
+echo -e ""export HEKETI_CLI_KEY=admin123" \n"export HEKETI_CLI_USER=admin" \n"export HEKETI_CLI_SERVER=http://`hostname -i`:8087"" >> .bash_profile
+cat .bash_profile | tail -n3
+source .bash_profile
+echo | ssh-keygen -t rsa
+echo "ssh-copy-id <worker ip>"
+cat .ssh/id_rsa >/etc/heketi/heketi.key
 echo ""
 else
  echo -e "Heketi Package Already Installed: \n `rpm -qa | grep heketi`"
